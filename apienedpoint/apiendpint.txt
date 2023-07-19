@@ -1,1 +1,30 @@
-user
+1. user entity
+.GET/users - Retreive a list of all users
+.POST/users -creat new user
+.PUT/users/{user_id}-updating user by ID
+.DELETE/User/{User_ID}-deleting user by ID
+.GET/users/{user_id}-retrieving user deltis by spe ID
+2.Movie entity
+.Get/movies-Retreive a list of all movies
+.post/movies-creat new movies
+.PUT/movies/{user_id}-updating movies by ID
+.DELETE/movies/{User_ID}-deleting movies by ID
+.GET/movies/{user_id}-retrieving user movies by spe ID
+3. Event entity
+.Get/event-Retreive a list of all event
+.post/event-creat new event
+.PUT/event/{user_id}-updating event by ID
+.DELETE/event/{User_ID}-deleting event by ID
+.GET/event/{user_id}-retrieving user event by spe ID
+4. show entity
+.Get/show-Retreive a list of all event
+.post/show-creat new event
+.PUT/show/{user_id}-updating show by ID
+.DELETE/show/{User_ID}-deleting show by ID
+.GET/show/{user_id}-retrieving user show by spe ID
+5. participent entity
+.Get/par-Retreive a list of all event
+.post/par-creat new event
+.PUT/par/{user_id}-updating participent by ID
+.DELETE/par/{User_ID}-deleting participent by ID
+.GET/par/{user_id}-retrieving user participent by spe ID
