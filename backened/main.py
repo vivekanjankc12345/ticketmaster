@@ -3,14 +3,14 @@ from flask_pymongo import PyMongo
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 import os
-
+from flask_cors import CORS
 # Load environment variables from the .env file
 load_dotenv()
 
 app = Flask(__name__)
 app.config['MONGO_URI'] = os.getenv('MONGO_URI')
 mongo = PyMongo(app)
-
+CORS(app)
 @app.route('/users', methods=['GET'])
 def get_users():
     users = mongo.db.userentity.find()
@@ -18,6 +18,7 @@ def get_users():
     user_list = []
     for user in users:
         user_dict = {
+            'user_id': str(user['_id']),
             'username': user['username'],
             'user_status': user['user_status'],
             'gender': user['gender'],
@@ -31,8 +32,15 @@ def get_users():
 @app.route('/users', methods=['POST'])
 def create_user():
     user_data = request.get_json()
+    username = user_data['username']
+
+    # Check if the username already exists in the database
+    existing_user = mongo.db.userentity.find_one({'username': username})
+    if existing_user:
+        return jsonify({'message': 'Username already exists'}), 409  # 409 Conflict
+
     new_user = {
-        'username': user_data['username'],
+        'username': username,
         'user_status': user_data['user_status'],
         'gender': user_data['gender'],
         'membership_type': user_data['membership_type'],
@@ -41,6 +49,19 @@ def create_user():
     }
     result = mongo.db.userentity.insert_one(new_user)
     return jsonify({'message': 'User created successfully', 'user_id': str(result.inserted_id)})
+# @app.route('/users', methods=['POST'])
+# def create_user():
+#     user_data = request.get_json()
+#     new_user = {
+#         'username': user_data['username'],
+#         'user_status': user_data['user_status'],
+#         'gender': user_data['gender'],
+#         'membership_type': user_data['membership_type'],
+#         'bio': user_data['bio'],
+#         'date_of_birth': user_data['date_of_birth']
+#     }
+#     result = mongo.db.userentity.insert_one(new_user)
+#     return jsonify({'message': 'User created successfully', 'user_id': str(result.inserted_id)})
 
 # Add other routes and functions for updating, deleting, and retrieving users by ID
 @app.route('/users/<string:user_id>', methods=['PUT'])
@@ -88,6 +109,35 @@ def get_user_by_id(user_id):
         return jsonify(user_dict)
     else:
         return jsonify({'message': 'User not found'})
+@app.route('/movies/post', methods=['POST'])
+def create_movie1():
+    movie_data = request.get_json()
+    new_movie = {
+        'title': movie_data['title'],
+        'description': movie_data['description'],
+        'genre': movie_data['genre'],
+        'duration': movie_data['duration'],
+        'image':movie_data['image'],
+        'category':movie_data['category'],
+    }
+    result = mongo.db.movies1.insert_one(new_movie)
+    return jsonify({'message': 'Movie created successfully', 'movie_id': str(result.inserted_id)})
+@app.route('/movies/get', methods=['GET'])
+def get_movies1():
+    movies = mongo.db.movies1.find()
+    movie_list = []
+    for movie in movies:
+        movie_dict = {
+            'title': movie['title'],
+            'description': movie['description'],
+            'genre': movie['genre'],
+            'duration': movie['duration'],
+            'image':movie['image'],
+            'category':movie['category'],
+        }
+        movie_list.append(movie_dict)
+    return jsonify(movie_list)
+# ////////////////////
 @app.route('/movies', methods=['GET'])
 def get_movies():
     movies = mongo.db.movies.find()
@@ -296,7 +346,7 @@ def delete_show_event(show_id):
         return jsonify({'message': 'Show event deleted successfully'})
     else:
         return jsonify({'message': 'Show event not found or not deleted'})
-    @app.route('/participant_events', methods=['GET'])
+@app.route('/participant_events', methods=['GET'])
 def get_participant_events():
     participant_events = mongo.db.participant_events.find()
     participant_event_list = []
